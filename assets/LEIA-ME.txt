@@ -1,0 +1,23 @@
+PASTA DA LOGO — ESQUADRÃO DO CÉU
+==================================
+
+1. Salve a imagem oficial da logo nesta pasta com o nome:
+
+     logo.png
+
+   Caminho final:  esquadrao-do-ceu/assets/logo.png
+
+2. Recomendado: PNG 512x512 com fundo transparente.
+
+3. Depois abra (ou atualize com F5) o arquivo:
+
+     esquadrao-do-ceu/index.html
+
+4. O sistema procura nesta ordem:
+     1) assets/logo.png   (esta pasta)
+     2) logo.png          (ao lado do index.html)
+
+   Se nenhum arquivo existir, o escudo padrão aparece
+   automaticamente — nada quebra.
+
+NÃO renomeie para JPG nem para outro nome: precisa ser logo.png.

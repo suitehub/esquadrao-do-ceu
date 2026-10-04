@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Esquadrão do Céu — Sistema do Clube</title>
+<!--
+  LOGO OFICIAL: salve o arquivo como
+    assets/logo.png   (recomendado, 512x512, fundo transparente)
+  ou como
+    logo.png          (ao lado deste index.html)
+  Depois é só apertar F5. Se não houver arquivo, o escudo padrão aparece.
+-->
+<style>
+:root{--bg:#050B11;--navy:#0A1B2A;--card:#081220;--blue:#009FE3;--cyan:#38BDF8;--gold:#F5B82E;--white:#F5F8FC;--gray:#94A3B8;--green:#35D07F;--red:#FF5C5C;--radius:18px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--white);font-family:Manrope,Inter,Segoe UI,Arial,sans-serif;min-height:100vh}
+button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit}
+input,select,textarea{font-family:inherit;color:#fff}
+svg{flex-shrink:0;vertical-align:-3px}
+.login{display:grid;min-height:100vh}
+@media(min-width:1000px){.login{grid-template-columns:1fr 1fr}}
+.login-hero{display:none;position:relative;overflow:hidden}
+@media(min-width:1000px){.login-hero{display:flex;flex-direction:column;justify-content:space-between;padding:48px;background:url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=80') center/cover} .login-hero::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#050B11 10%,rgba(5,11,17,.55))} .login-hero>*{position:relative;z-index:1}}
+.login-box{display:flex;align-items:center;justify-content:center;padding:32px 20px;background:radial-gradient(600px 300px at 50% 0%,rgba(0,159,227,.18),transparent)}
+.card-login{width:100%;max-width:380px}
+.field{width:100%;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);padding:14px;margin-top:10px;font-size:14px;outline:none}
+.field:focus{border-color:var(--cyan)}
+.btn-primary{display:flex;width:100%;align-items:center;justify-content:center;gap:8px;border-radius:14px;background:linear-gradient(135deg,#009FE3,#0077ff);padding:14px;font-size:14px;font-weight:800;margin-top:14px;box-shadow:0 12px 30px rgba(0,159,227,.4)}
+.btn-ghost{width:100%;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);padding:13px;margin-top:10px;font-weight:700;font-size:14px}
+.shell{display:flex;min-height:100vh}
+.sidebar{display:none;width:250px;flex-shrink:0;border-right:1px solid rgba(255,255,255,.06);background:#07121c;padding:20px;position:sticky;top:0;height:100vh;flex-direction:column}
+@media(min-width:1024px){.sidebar{display:flex}}
+.navbtn{display:flex;width:100%;align-items:center;gap:12px;border-radius:12px;padding:10px 14px;font-size:13.5px;font-weight:600;color:#8fa0b5;margin-bottom:2px;text-align:left}
+.navbtn:hover{background:rgba(255,255,255,.05);color:#fff}
+.navbtn.active{background:linear-gradient(90deg,rgba(0,159,227,.3),rgba(0,159,227,.08));color:#fff;box-shadow:inset 0 0 0 1px rgba(0,159,227,.35)}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{position:sticky;top:0;z-index:20;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(5,11,17,.9);backdrop-filter:blur(12px)}
+.topbar-in{max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:10px;padding:12px 16px}
+.search{position:relative;flex:1;max-width:340px;margin-left:auto;display:flex;align-items:center}
+.search svg{position:absolute;left:12px;color:#556}
+.search input{width:100%;border-radius:999px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);padding:10px 14px 10px 36px;font-size:13px;outline:none}
+.iconbtn{position:relative;display:grid;place-items:center;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04)}
+.badge-dot{position:absolute;right:6px;top:6px;min-width:16px;height:16px;border-radius:999px;background:#ef4444;font-size:9px;font-weight:800;display:grid;place-items:center;padding:0 4px}
+.avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid rgba(245,184,46,.6)}
+.content{max-width:1080px;width:100%;margin:0 auto;padding:20px 16px 110px}
+@media(min-width:1024px){.content{padding-bottom:40px}}
+.bottomnav{position:fixed;left:0;right:0;bottom:0;z-index:30;border-top:1px solid rgba(255,255,255,.1);background:rgba(7,18,28,.96);backdrop-filter:blur(12px)}
+.bottomnav-in{max-width:480px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);padding:8px}
+.bottomnav button{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:700;color:#5b6b80;padding:6px;border-radius:10px}
+.bottomnav button.active{color:var(--cyan)}
+@media(min-width:1024px){.bottomnav{display:none}}
+.hero{position:relative;overflow:hidden;border-radius:24px;border:1px solid rgba(255,255,255,.1);background:url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=1400&q=80') center/cover}
+.hero::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#050B11 20%,rgba(5,11,17,.75),rgba(5,11,17,.2))}
+.hero-in{position:relative;z-index:1;padding:24px}
+@media(min-width:700px){.hero-in{padding:32px}}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+@media(min-width:900px){.stats{grid-template-columns:repeat(4,1fr)}}
+.stat{border-radius:16px;border:1px solid rgba(255,255,255,.1);background:rgba(10,22,34,.92);padding:16px}
+.stat b{font-size:24px}
+.stat small{display:block;color:var(--gray);font-size:12px;margin-top:2px}
+.up{color:#34d399;font-size:11px;font-weight:700;margin-top:4px}
+.panel{border-radius:22px;border:1px solid rgba(255,255,255,.1);background:var(--card);padding:20px;margin-top:20px}
+.panel h3{font-size:15px}
+.grid2{display:grid;gap:20px}
+@media(min-width:900px){.grid2{grid-template-columns:1fr 320px}}
+.unitgrid{display:grid;gap:14px;margin-top:14px}
+@media(min-width:640px){.unitgrid{grid-template-columns:repeat(3,1fr)}}
+.unitcard{overflow:hidden;border-radius:18px;border:1px solid;text-align:left;background:linear-gradient(180deg,rgba(255,255,255,.04),transparent);transition:transform .15s;color:#fff}
+.unitcard:hover{transform:translateY(-2px)}
+.unitcover{position:relative;height:132px;background:#0d1622;overflow:hidden;display:grid;place-items:center}
+.unitcover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.45}
+.unitcover::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent,#000c)}
+.ranktag{position:absolute;right:8px;top:8px;background:rgba(0,0,0,.6);border:1px solid rgba(245,184,46,.4);color:var(--gold);font-size:11px;font-weight:800;border-radius:8px;padding:3px 8px;z-index:2}
+.unitname{position:absolute;left:0;right:0;bottom:6px;text-align:center;z-index:2}
+.unitname b{font-size:17px;letter-spacing:.04em;display:block}
+.unitname i{display:block;font-size:11px;color:rgba(255,255,255,.7);font-style:italic}
+.unitbody{padding:14px}
+.bar{height:8px;border-radius:999px;background:rgba(255,255,255,.1);overflow:hidden;margin-top:5px}
+.bar>i{display:block;height:100%;border-radius:999px}
+.rowline{display:flex;justify-content:space-between;font-size:12px;margin-top:10px}
+.rowline b{font-size:13px}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 10px;font-size:11px;font-weight:800;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05)}
+.link{color:var(--cyan);font-size:12px;font-weight:800}
+.evrow{display:flex;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);width:100%;text-align:left;color:#fff}
+.evrow:last-child{border-bottom:0}
+.datebox{width:46px;min-height:52px;flex-shrink:0;display:grid;place-items:center;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);text-align:center;padding:6px}
+.datebox b{font-size:17px;line-height:1.2}
+.datebox small{font-size:9px;color:var(--gray);font-weight:800}
+.dot{width:10px;height:10px;border-radius:50%;margin-left:auto;flex-shrink:0}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-top:14px}
+.tab{flex-shrink:0;border-radius:999px;padding:8px 16px;font-size:12px;font-weight:800;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:#8fa0b5}
+.tab.active{background:rgba(0,159,227,.2);color:#fff;border-color:rgba(56,189,248,.5)}
+.memberrow{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1px solid rgba(255,255,255,.1);background:var(--card);border-radius:16px;padding:12px;margin-top:10px;color:#fff}
+.memberrow:hover{border-color:rgba(56,189,248,.4)}
+.memberrow img{width:46px;height:46px;border-radius:50%;object-fit:cover}
+.cards2{display:grid;gap:10px;margin-top:14px}
+@media(min-width:640px){.cards2{grid-template-columns:1fr 1fr}}
+.req{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:11px 8px;border-radius:12px;font-size:13.5px;color:#fff}
+.req:hover{background:rgba(255,255,255,.04)}
+.check{width:24px;height:24px;flex-shrink:0;border-radius:50%;border:1.5px solid rgba(255,255,255,.25);display:grid;place-items:center;color:#fff}
+.check.on{background:#10b981;border-color:#6ee7b7;box-shadow:0 0 12px rgba(52,211,153,.6)}
+table.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#64748b;text-align:left;padding:10px 12px;background:rgba(255,255,255,.03)}
+.tbl td{padding:12px;border-top:1px solid rgba(255,255,255,.05)}
+.tag{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:4px 12px;font-size:11px;font-weight:800;border:1px solid}
+.tag.g{background:rgba(52,211,153,.12);color:#6ee7b7;border-color:rgba(52,211,153,.4)}
+.tag.a{background:rgba(245,184,46,.12);color:#fcd34d;border-color:rgba(245,184,46,.4)}
+.tag.r{background:rgba(239,68,68,.12);color:#fca5a5;border-color:rgba(239,68,68,.4)}
+.btnrow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.btn2{border-radius:12px;padding:13px;font-weight:800;font-size:13px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:#fff}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:12px;text-align:center}
+.cal span.h{font-size:10px;color:#64748b;font-weight:800;padding:6px 0}
+.cal button{aspect-ratio:1;border-radius:50%;font-size:12px;font-weight:700;color:#94A3B8}
+.mission{border:1px solid rgba(255,255,255,.1);background:var(--card);border-radius:16px;padding:16px;margin-top:12px}
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:14px;margin-top:20px}
+.pcol{display:flex;flex-direction:column;align-items:center;width:110px;color:#fff}
+.pbox{width:100%;display:grid;place-items:center;border-radius:20px;border:1px solid;color:#fff}
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+@media(min-width:640px){.gal{grid-template-columns:repeat(4,1fr)}}
+.gal img{width:100%;height:110px;object-fit:cover;border-radius:14px}
+@media(min-width:640px){.gal img{height:140px}}
+.modal-bg{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.7);display:grid;place-items:center;padding:16px;backdrop-filter:blur(4px)}
+.modal{width:100%;max-width:440px;border-radius:22px;border:1px solid rgba(255,255,255,.12);background:#0A1622;padding:20px}
+#toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:60;background:#0A1B2A;border:1px solid rgba(56,189,248,.4);box-shadow:0 0 30px rgba(0,159,227,.4);border-radius:999px;padding:10px 20px;font-size:13px;font-weight:800;display:none;white-space:nowrap}
+@media(min-width:1024px){#toast{bottom:32px}}
+.logo{display:flex;align-items:center;gap:12px}
+.logoshield{width:52px;height:52px;flex-shrink:0;display:grid;place-items:center;position:relative;color:#fff}
+.logoshield img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.ringwrap{display:flex;align-items:center;gap:16px}
+textarea.edit{width:100%;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);padding:12px;font-size:13px;margin-top:10px;min-height:120px;outline:none}
+.warbox{margin-top:10px;border:1px solid rgba(245,184,46,.35);background:rgba(245,184,46,.06);border-radius:14px;padding:16px;text-align:center;font-weight:900;color:#fde68a;white-space:pre-line;line-height:1.6}
+.kv{font-size:12px;color:var(--gray)}
+.kv b{color:#fff}
+.hist{font-size:13px;line-height:1.7;color:#cbd5e1;margin-top:10px}
+.chartbar{display:flex;align-items:center;gap:8px;font-size:12px;margin-top:8px}
+.chartbar .bar{flex:1}
+.mini-logo{display:flex;align-items:center;gap:8px;font-weight:900;font-size:13px}
+@media(min-width:1024px){.mini-logo{display:none}}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+<div id="modal-root"></div>
+<div id="app"></div>
+<script>
+/* Ícones SVG (traço, sem emojis) */
+var P={
+home:'<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h5v-6h4v6h5V9.5"/>',
+shield:'<path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6l7-3z"/><path d="m9.5 12 2 2 3.5-4"/>',
+users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M16.2 14.7c2.3.4 4.1 2.1 4.8 5.3"/>',
+clip:'<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4.5A1.5 1.5 0 0 1 10.5 3h3A1.5 1.5 0 0 1 15 4.5"/><path d="m9.5 13 2 2 3.5-4"/>',
+cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/>',
+target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none"/>',
+trophy:'<path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 5H4.5A1.5 1.5 0 0 0 3 6.5C3 9 5 11 7.5 11M16 5h3.5A1.5 1.5 0 0 1 21 6.5C21 9 19 11 16.5 11"/><path d="M12 13v4M8 21h8M10 17h4"/>',
+camera:'<path d="M4 8h3l2-2.5h6L17 8h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.5"/>',
+chart:'<path d="M3 20h18"/><path d="M6 20v-6M12 20V6M18 20v-9"/>',
+cog:'<circle cx="12" cy="12" r="3"/><path d="M19.4 13a7.5 7.5 0 0 0 0-2l2-1.5-2-3.5-2.3 1a7.6 7.6 0 0 0-1.7-1L13 3h-4l-.4 2.6a7.6 7.6 0 0 0-1.7 1l-2.3-1-2 3.5L4.6 11a7.5 7.5 0 0 0 0 2l-2 1.5 2 3.5 2.3-1a7.6 7.6 0 0 0 1.7 1L9 21h4l.4-2.6a7.6 7.6 0 0 0 1.7-1l2.3 1 2-3.5-2-1.5z"/>',
+search:'<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+bell:'<path d="M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 20a2 2 0 0 0 4 0"/>',
+flame:'<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',
+bird:'<path d="M16 7h.01"/><path d="M3.4 18H12a8 8 0 0 0 8-8V7a4 4 0 0 0-7.28-2.3L2 20"/><path d="m20 7 2 .5-2 .5"/><path d="M10 18v3M14 17.75V21M7 18a6 6 0 0 0 3.84-10.61"/>',
+clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+pin:'<path d="M12 21s-7-5.4-7-11a7 7 0 0 1 14 0c0 5.6-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+check:'<path d="m4.5 12.5 5 5 10-11"/>',
+x:'<path d="M6 6l12 12M18 6 6 18"/>',
+plus:'<path d="M12 5v14M5 12h14"/>',
+menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',
+medal:'<circle cx="12" cy="14" r="5"/><path d="M8.6 9.6 6 3h4l2 4 2-4h4l-2.6 6.6"/>',
+spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/>',
+chev:'<path d="m9 5 7 7-7 7"/>',
+shirt:'<path d="M9 3 3 7l2 3 2-1v12h10V9l2 1 2-3-6-4a3 3 0 0 1-6 0z"/>'
+};
+function ic(n,s){s=s||16;return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+P[n]+'</svg>'}
+function starF(s,c){s=s||16;return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.94 5.96 6.56.95-4.75 4.63 1.12 6.53L12 17l-5.87 3.07 1.12-6.53-4.75-4.63 6.56-.95z" fill="'+(c||'currentColor')+'"/></svg>'}
+function unitIcon(id,s){s=s||34;if(id==='aguias')return '<span style="color:#FCD34D">'+ic('bird',s)+'</span>';if(id==='fenix')return '<span style="color:#FB923C">'+ic('flame',s)+'</span>';return '<span style="color:#7DD3FC">'+starF(s,'#7DD3FC')+'</span>'}
+
+var DB = {
+units:[
+ {id:'aguias',name:'ÁGUIAS',short:'Águias',warcry:'Sempre prontos!',counselor:'João Silva',founded:'2022',color:'#F5B82E',border:'rgba(245,184,46,.35)',req:91,freq:94,events:100,uniform:90,points:3016,rank:1,history:'A Unidade Águias nasceu em 2022 com 6 desbravadores sonhadores. Adotamos o lema "Sempre prontos!" — prontos para servir, aprender e voar mais alto. Fomos a primeira unidade com 100% de presença num trimestre e lideramos o acampamento de 2024.'},
+ {id:'fenix',name:'FÊNIX',short:'Fênix',warcry:'Renascer para servir',counselor:'Maria Fernanda',founded:'2022',color:'#FF6B35',border:'rgba(255,107,53,.35)',req:82,freq:87,events:90,uniform:84,points:2810,rank:2,history:'A Unidade Fênix quase fechou em 2022 e renasceu mais forte. Nosso símbolo é a fênix: todo desafio é chance de recomeçar. Conhecidos pela criatividade nas missões e pelo apoio incondicional — ninguém fica para trás.'},
+ {id:'stelar',name:'STELAR',short:'Stelar',warcry:'Brilhe por outros',counselor:'Carlos Oliveira',founded:'2023',color:'#38BDF8',border:'rgba(56,189,248,.35)',req:74,freq:80,events:85,uniform:78,points:2255,rank:3,history:'A Unidade Stelar é a caçula, fundada em 2023. Inspirados nas estrelas, cada desbravador tem luz única. Foco em astronomia e natureza. Prêmio de unidade mais unida em 2025.'}
+],
+members:[
+ {id:'pedro',name:'Pedro Henrique',age:13,role:'Desbravador',unit:'aguias',progress:86,freq:92,points:1240,award:'Ouro',img:'https://i.pravatar.cc/100?img=13',done:18,total:21},
+ {id:'ana',name:'Ana Clara',age:12,role:'Desbravadora',unit:'aguias',progress:78,freq:88,points:1080,award:'Prata',img:'https://i.pravatar.cc/100?img=47',done:16,total:21},
+ {id:'joao',name:'João Pedro',age:14,role:'Desbravador',unit:'aguias',progress:73,freq:85,points:990,award:'Prata',img:'https://i.pravatar.cc/100?img=12',done:15,total:21},
+ {id:'lucas',name:'Lucas Gabriel',age:11,role:'Desbravador',unit:'aguias',progress:65,freq:78,points:840,award:'Bronze',img:'https://i.pravatar.cc/100?img=59',done:13,total:21},
+ {id:'mari',name:'Mariana Santos',age:13,role:'Desbravadora',unit:'aguias',progress:92,freq:96,points:1310,award:'Ouro',img:'https://i.pravatar.cc/100?img=44',done:19,total:21},
+ {id:'rafa',name:'Rafael Lima',age:15,role:'Capitão',unit:'aguias',progress:95,freq:98,points:1420,award:'Ouro',img:'https://i.pravatar.cc/100?img=11',done:20,total:21},
+ {id:'bia',name:'Beatriz Costa',age:12,role:'Desbravadora',unit:'aguias',progress:81,freq:90,points:1120,award:'Prata',img:'https://i.pravatar.cc/100?img=32',done:17,total:21},
+ {id:'gui',name:'Guilherme Alves',age:14,role:'Desbravador',unit:'aguias',progress:69,freq:82,points:910,award:'Bronze',img:'https://i.pravatar.cc/100?img=53',done:14,total:21},
+ {id:'camila',name:'Camila Rocha',age:13,role:'Desbravadora',unit:'fenix',progress:84,freq:89,points:1180,award:'Prata',img:'https://i.pravatar.cc/100?img=26',done:17,total:21},
+ {id:'thiago',name:'Thiago Martins',age:14,role:'Capitão',unit:'fenix',progress:88,freq:91,points:1250,award:'Ouro',img:'https://i.pravatar.cc/100?img=15',done:18,total:21},
+ {id:'lari',name:'Larissa Melo',age:12,role:'Desbravadora',unit:'fenix',progress:76,freq:84,points:1020,award:'Prata',img:'https://i.pravatar.cc/100?img=45',done:16,total:21},
+ {id:'davi',name:'Davi Oliveira',age:13,role:'Capitão',unit:'stelar',progress:82,freq:86,points:1140,award:'Prata',img:'https://i.pravatar.cc/100?img=14',done:17,total:21},
+ {id:'gabi',name:'Gabriel Reis',age:15,role:'Desbravador',unit:'stelar',progress:87,freq:89,points:1210,award:'Ouro',img:'https://i.pravatar.cc/100?img=51',done:18,total:21},
+ {id:'helena',name:'Helena Dias',age:12,role:'Desbravadora',unit:'stelar',progress:77,freq:82,points:1040,award:'Prata',img:'https://i.pravatar.cc/100?img=31',done:16,total:21}
+],
+reqInd:['Conhecer o voto e a lei','Estudar os ideais dos Desbravadores','Completar atividade de companheirismo','Completar especialidade de nós','Participar de 5 reuniões','Ler 3 livros espirituais','Completar especialidade de Primeiros Socorros','Participar de um acampamento','Decorar 10 versículos','Completar arte de acampar','Participar de caminhada ecológica','Apresentar relatório bíblico'],
+reqUni:['Todos presentes em reunião mensal','Unidade completa uniformizada','Completar missão da temporada','Participar de acampamento com 100%','Apresentar grito de guerra','Organizar ação comunitária','Manter frequência acima de 85%','Atualizar história da unidade'],
+reqCons:['Plano trimestral entregue','Chamada registrada','Reunião com pais','Relatório mensal','Participar de capacitação','Acompanhar especialidades'],
+events:[
+ {name:'Reunião regular',day:'05',mon:'OUT',time:'19:00 - 21:00',place:'IASD Central',type:'Reunião',color:'#38BDF8',pts:100},
+ {name:'Acampamento',day:'10',mon:'OUT',time:'08:00 - Parque Municipal',place:'Parque Municipal',type:'Acampamento',color:'#35D07F',pts:300},
+ {name:'Investidura',day:'17',mon:'OUT',time:'19:00 - IASD Central',place:'IASD Central',type:'Investidura',color:'#A78BFA',pts:200},
+ {name:'Caminhada',day:'24',mon:'OUT',time:'07:00 - Trilha da Serra',place:'Trilha da Serra',type:'Caminhada',color:'#94A3B8',pts:150}
+],
+missions:[
+ {t:'Unidade completa',d:'Todos os membros presentes na próxima reunião.',pts:150,s:'Em andamento',scope:'Unidade',p:80},
+ {t:'Todos uniformizados',d:'100% da unidade com fardamento completo.',pts:200,s:'Em andamento',scope:'Unidade',p:60},
+ {t:'Concluir especialidade',d:'Concluir Primeiros Socorros.',pts:50,s:'Nova',scope:'Individual',p:30},
+ {t:'Frequência máxima',d:'Manter 95% de frequência no mês.',pts:180,s:'Em andamento',scope:'Unidade',p:70}
+],
+gallery:['photo-1504280390367-361c6d9f38f4','photo-1478131143081-80f7f84ca84d','photo-1504851149312-7a075b496cc7','photo-1510312305653-8ed496efae75','photo-1470071459604-3b5ec3a7fe05','photo-1501554728187-ce583db33af7','photo-1500581276021-a4bbcd0050c5','photo-1478827536114-da961b7f86d2'],
+freqHist:[['01/09',82],['08/09',76],['15/09',91],['22/09',87],['29/09',94]]
+};
+var S = {logged:false,screen:'dashboard',unitId:'aguias',memberId:'pedro',unitTab:'Visão geral',reqTab:'Individuais',galF:'Todos',rankF:'Geral',search:'',checked:{0:1,1:1,2:1,4:1,5:1},freq:{},editing:false};
+function unit(id){return DB.units.find(function(u){return u.id===id})||DB.units[0]}
+function member(id){return DB.members.find(function(m){return m.id===id})||DB.members[0]}
+function toast(t){var e=document.getElementById('toast');e.textContent=t;e.style.display='block';clearTimeout(e._h);e._h=setTimeout(function(){e.style.display='none'},2200)}
+function go(s,extra){S.screen=s;if(extra)for(var k in extra)S[k]=extra[k];window.scrollTo(0,0);render()}
+function bar(v,c){return '<div class="bar"><i style="width:'+v+'%;background:'+(c||'#F5B82E')+';box-shadow:0 0 10px '+(c||'#F5B82E')+'"></i></div>'}
+function ring(v,size,color){var r=((size||110)-12)/2,c=2*Math.PI*r;return '<div style="position:relative;width:'+(size||110)+'px;height:'+(size||110)+'px;display:grid;place-items:center"><svg width="'+(size||110)+'" height="'+(size||110)+'" style="transform:rotate(-90deg)"><circle cx="'+(size||110)/2+'" cy="'+(size||110)/2+'" r="'+r+'" stroke="rgba(255,255,255,.1)" stroke-width="10" fill="none"/><circle cx="'+(size||110)/2+'" cy="'+(size||110)/2+'" r="'+r+'" stroke="'+(color||'#38BDF8')+'" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="'+c+'" stroke-dashoffset="'+(c-(c*v/100))+'"/></svg><div style="position:absolute;text-align:center"><div style="font-size:24px;font-weight:900">'+v+'%</div><div style="font-size:10px;color:#94A3B8">concluído</div></div></div>'}
+/* Logo: tenta assets/logo.png, depois logo.png; se não existir, mostra o escudo padrão */
+function logoHTML(){return '<div class="logo"><div class="logoshield">'+ic('shield',26)+'<img src="assets/logo.png" alt="Esquadrão do Céu" onerror="this.onerror=null;this.src=\'logo.png\';this.onerror=function(){this.remove()}"> '+'</div><div><div style="font-size:9px;font-weight:800;letter-spacing:.28em;color:#67e8f9">CLUBE</div><div style="font-size:15px;font-weight:900;line-height:1.05">ESQUADRÃO<br><span style="color:#67e8f9">DO CÉU</span></div></div></div>'}
+var NAV=[['dashboard','Início','home'],['unidades','Unidades','shield'],['desbravadores','Desbravadores','users'],['requisitos','Requisitos','clip'],['agenda','Agenda','cal'],['eventos','Eventos','target'],['ranking','Ranking','trophy'],['galeria','Galeria','camera'],['relatorios','Relatórios','chart'],['config','Configurações','cog']];
+var BOTTOM=[['dashboard','Início','home'],['unidades','Unidades','shield'],['eventos','Eventos','cal'],['ranking','Ranking','trophy'],['mais','Mais','menu']];
+function render(){
+var app=document.getElementById('app');
+if(!S.logged){app.innerHTML=loginHTML();return}
+var h='<div class="shell"><aside class="sidebar"><button onclick="go(\'dashboard\')" style="text-align:left">'+logoHTML()+'</button><nav style="margin-top:24px;flex:1;overflow-y:auto">';
+NAV.forEach(function(n){var act=(S.screen===n[0]||(n[0]==='unidades'&&S.screen==='unidade')||(n[0]==='desbravadores'&&S.screen==='membro'))?'active':'';h+='<button class="navbtn '+act+'" onclick="go(\''+n[0]+'\')">'+ic(n[2],18)+n[1]+'</button>'});
+h+='<button class="navbtn '+(S.screen==='missoes'?'active':'')+'" onclick="go(\'missoes\')">'+ic('spark',18)+'Missões</button><button class="navbtn '+(S.screen==='frequencia'?'active':'')+'" onclick="go(\'frequencia\')">'+ic('shirt',18)+'Frequência</button><button class="navbtn '+(S.screen==='premiacoes'?'active':'')+'" onclick="go(\'premiacoes\')">'+ic('medal',18)+'Premiações</button></nav><div style="display:flex;gap:10px;align-items:center;border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:10px;background:rgba(255,255,255,.03)"><img src="https://i.pravatar.cc/80?img=11" style="width:38px;height:38px;border-radius:50%;object-fit:cover"><div><div style="font-size:13px;font-weight:800">Henrique Castro</div><div style="font-size:11px;color:#94A3B8">Diretor do Clube</div></div></div></aside>';
+h+='<div class="main"><div class="topbar"><div class="topbar-in"><span class="mini-logo"><span class="logoshield" style="width:34px;height:34px">'+ic('shield',18)+'</span>Esquadrão do Céu</span><div class="search">'+ic('search',16)+'<input placeholder="Buscar desbravadores, eventos..." oninput="S.search=this.value;if(S.screen===\'desbravadores\')render()" value="'+(S.search||'')+'"></div><button class="iconbtn" onclick="toast(\'4 notificações não lidas\')">'+ic('bell',17)+'<span class="badge-dot">4</span></button><img class="avatar" src="https://i.pravatar.cc/80?img=11"></div></div><div class="content">'+screenHTML()+'</div>';
+h+='<div class="bottomnav"><div class="bottomnav-in">';
+BOTTOM.forEach(function(b){h+='<button class="'+(S.screen===b[0]?'active':'')+'" onclick="go(\''+b[0]+'\')">'+ic(b[2],20)+b[1]+'</button>'});
+h+='</div></div></div></div>';
+app.innerHTML=h;
+}
+function loginHTML(){
+return '<div class="login"><div class="login-hero"><div>'+logoHTML()+'</div><div><h2 style="font-size:46px;font-weight:900;line-height:1.05;max-width:420px">O futuro do seu clube começa aqui.</h2><p style="color:rgba(255,255,255,.65);margin-top:12px">Menos planilhas. Mais tempo para liderar.</p></div><p style="font-style:italic;color:rgba(255,255,255,.75)">"Mais que um clube, uma missão."</p></div><div class="login-box"><div class="card-login"><div style="display:flex;justify-content:center">'+logoHTML()+'</div><h1 style="text-align:center;font-size:24px;font-weight:900;margin-top:18px">O futuro do seu clube<br>começa aqui.</h1><p style="text-align:center;font-size:13px;color:#94A3B8;margin-top:6px">Menos planilhas. Mais tempo para liderar.</p><input id="li-email" class="field" value="henrique@esquadraodoceu.com"><input id="li-pass" type="password" class="field" value="esquadrao123"><div style="text-align:right;font-size:12px;color:#67e8f9;font-weight:800;margin-top:8px">Esqueci minha senha?</div><button class="btn-primary" onclick="S.logged=true;render();toast(\'Bem-vindo, Henrique!\')">Entrar</button><button class="btn-ghost" onclick="S.logged=true;render()">Continuar com Google</button><p style="text-align:center;font-size:12px;color:#64748b;margin-top:14px">Protótipo navegável · Águias · Fênix · Stelar</p></div></div></div>';
+}
+function screenHTML(){
+switch(S.screen){
+case 'dashboard':return vDashboard();
+case 'unidades':return vUnidades();
+case 'unidade':return vUnidade();
+case 'desbravadores':return vMembros();
+case 'membro':return vMembro();
+case 'requisitos':return vRequisitos();
+case 'frequencia':return vFrequencia();
+case 'agenda':return vAgenda();
+case 'eventos':return vEventos();
+case 'missoes':return vMissoes();
+case 'ranking':return vRanking();
+case 'premiacoes':return vPremiacoes();
+case 'galeria':return vGaleria();
+case 'relatorios':return vRelatorios();
+case 'config':return vConfig();
+default:return vMais();
+}}
+function awardPill(a){var c=a==='Ouro'?'#F5B82E':(a==='Prata'?'#CBD5E1':'#F97316');return '<span class="pill" style="color:'+c+'">'+ic('medal',12)+a+'</span>'}
+function vDashboard(){
+var h='<div class="hero"><div class="hero-in"><h2 style="font-size:26px;font-weight:900">Olá, Henrique!</h2><p style="font-size:13px;color:#cbd5e1">Veja como está o Esquadrão do Céu hoje.</p><div class="stats">';
+var stats=[['24','Desbravadores','+12% este mês','users'],['87%','Frequência média','+8% este mês','cal'],['82%','Requisitos concluídos','+15% este mês','medal'],['3','Unidades ativas','Águias, Fênix e Stelar','shield']];
+stats.forEach(function(s){h+='<div class="stat"><div style="display:flex;align-items:center;gap:8px;color:#67e8f9">'+ic(s[3],18)+'<b>'+s[0]+'</b></div><small>'+s[1]+'</small><div class="up">↑ '+s[2]+'</div></div>'});
+h+='</div></div></div><div class="grid2"><div><div class="panel"><div style="display:flex;justify-content:space-between;align-items:center"><h3>'+ic('chart',16)+' Desempenho das Unidades</h3><button class="link" onclick="go(\'ranking\')">Ver ranking completo →</button></div><div class="unitgrid">';
+DB.units.forEach(function(u){h+='<button class="unitcard" style="border-color:'+u.border+'" onclick="go(\'unidade\',{unitId:\''+u.id+'\'})"><div class="unitcover"><img src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=600&q=80"><span class="ranktag">'+u.rank+'° lugar</span><div class="unitname">'+unitIcon(u.id,34)+'<b>'+u.name+'</b><i>"'+u.warcry+'"</i></div></div><div class="unitbody"><div class="rowline"><b>'+u.req+'%</b><span class="kv">Requisitos</span></div>'+bar(u.req,'#F5B82E')+'<div class="rowline"><b>'+u.freq+'%</b><span class="kv">Frequência</span></div>'+bar(u.freq,'#38BDF8')+'<div class="rowline"><b>'+u.events+'%</b><span class="kv">Eventos</span></div>'+bar(u.events,'#35D07F')+'<div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;border-top:1px solid rgba(255,255,255,.08);padding-top:10px"><span style="color:var(--gold);font-weight:900;font-size:13px;display:inline-flex;gap:5px;align-items:center">'+starF(14,'#F5B82E')+u.points.toLocaleString('pt-BR')+' pontos</span><span class="kv">8 membros ›</span></div></div></button>'});
+h+='</div></div><div class="grid2" style="grid-template-columns:1fr 1fr;margin-top:0"><div class="panel"><h3>Frequência nas últimas reuniões</h3><div style="display:flex;align-items:flex-end;gap:10px;height:150px;margin-top:14px">';
+DB.freqHist.forEach(function(f){h+='<div style="flex:1;text-align:center"><div style="font-size:10px;color:#67e8f9;font-weight:800">'+f[1]+'%</div><div style="border-radius:8px 8px 0 0;background:linear-gradient(180deg,#38BDF8,#0077ff);height:'+(f[1]*1.2)+'px"></div><div style="font-size:10px;color:#64748b">'+f[0]+'</div></div>'});
+h+='</div></div><div class="panel"><h3>Requisitos do clube</h3><div class="ringwrap" style="margin-top:12px">'+ring(82)+'<div style="flex:1;font-size:13px"><div>Individuais <b style="float:right">78%</b></div><div>Unidades <b style="float:right">85%</b></div><div>Conselheiros <b style="float:right">81%</b></div></div></div></div></div></div><div><div class="panel" style="margin-top:0"><div style="display:flex;justify-content:space-between"><h3>Próximo evento</h3><button class="link" onclick="go(\'agenda\')">Ver agenda →</button></div><div style="border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px;margin-top:12px;background:rgba(255,255,255,.02)"><div style="display:flex;gap:12px"><div class="datebox"><div><small>OUT</small><b>05</b></div></div><div><b>Reunião regular</b><div class="kv">'+ic('clock',12)+' 19:00 - 21:00</div><div class="kv">'+ic('pin',12)+' IASD Central</div></div></div><button class="btn-primary" onclick="go(\'eventos\')">Ver detalhes →</button></div></div><div class="panel"><div style="display:flex;justify-content:space-between"><h3>Eventos do mês</h3><button class="link" onclick="go(\'eventos\')">Ver todos →</button></div>';
+DB.events.forEach(function(e){h+='<button class="evrow" onclick="go(\'eventos\')"><span class="datebox"><span><small>'+e.mon+'</small><br><b>'+e.day+'</b></span></span><span><b style="font-size:13px">'+e.name+'</b><br><span class="kv">'+e.time+' · '+e.place+'</span></span><span class="dot" style="background:'+e.color+'"></span></button>'});
+h+='</div></div></div>';
+return h;
+}
+function vUnidades(){
+var h='<h2 style="font-size:20px;font-weight:900">Unidades</h2><p class="kv">3 unidades no Esquadrão do Céu</p>';
+DB.units.forEach(function(u){h+='<div class="panel" style="border-color:'+u.border+'"><div style="display:flex;gap:14px;align-items:center"><div style="background:rgba(0,0,0,.4);border-radius:16px;width:62px;height:62px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.12)">'+unitIcon(u.id,36)+'</div><div><b style="font-size:17px">'+u.short+' <span class="pill" style="color:var(--gold);border-color:rgba(245,184,46,.4)">'+u.rank+'° lugar</span></b><div style="font-style:italic;font-size:12px;color:rgba(255,255,255,.6)">"'+u.warcry+'"</div><div class="kv">8 desbravadores</div></div></div><div style="display:grid;grid-template-columns:repeat(3,1fr);text-align:center;margin-top:14px"><div><b style="font-size:18px">'+u.req+'%</b><div class="kv">Requisitos</div></div><div><b style="font-size:18px">'+u.freq+'%</b><div class="kv">Frequência</div></div><div><b style="font-size:18px">'+u.events+'%</b><div class="kv">Eventos</div></div></div><button class="btn-primary" onclick="go(\'unidade\',{unitId:\''+u.id+'\'})">Ver unidade →</button></div>'});
+return h;
+}
+function vUnidade(){
+var u=unit(S.unitId),tabs=['Visão geral','Membros','Requisitos','Missões','História','Fotos'];
+var h='<div class="panel" style="text-align:center;border-color:'+u.border+'"><div style="display:flex;justify-content:center">'+unitIcon(u.id,54)+'</div><h2 style="font-size:24px;font-weight:900;margin-top:6px">'+u.name+'</h2><p style="font-style:italic;color:rgba(255,255,255,.7);font-size:13px">"'+u.warcry+'"</p><div style="border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:10px;margin-top:12px;display:flex;gap:10px;align-items:center;text-align:left;background:rgba(0,0,0,.35)"><img src="https://i.pravatar.cc/80?img=12" style="width:40px;height:40px;border-radius:50%"><div><div class="kv">Conselheiro</div><b style="font-size:13px">'+u.counselor+'</b></div><span class="kv" style="margin-left:auto;display:inline-flex;gap:5px;align-items:center">'+ic('users',14)+' 8 desbravadores</span></div><div style="border:1px solid rgba(245,184,46,.35);background:rgba(245,184,46,.08);border-radius:14px;padding:10px;margin-top:10px;font-weight:900;color:var(--gold);display:flex;gap:8px;align-items:center;justify-content:center">'+ic('trophy',18)+u.rank+'° lugar · '+u.points.toLocaleString('pt-BR')+' pontos</div></div><div class="tabs">';
+tabs.forEach(function(t){h+='<button class="tab '+(S.unitTab===t?'active':'')+'" onclick="S.unitTab=\''+t+'\';render()">'+t+'</button>'});
+h+='</div>';
+if(S.unitTab==='Visão geral'){h+='<div class="panel"><h3>Desempenho da Unidade</h3>';[['Requisitos',u.req,'#F5B82E'],['Frequência',u.freq,'#38BDF8'],['Eventos',u.events,'#35D07F'],['Fardamento',u.uniform,'#A78BFA']].forEach(function(r){h+='<div class="rowline"><span>'+r[0]+'</span><b>'+r[1]+'%</b></div>'+bar(r[1],r[2])});h+='<button class="btn-primary" onclick="go(\'ranking\')">Ver ranking geral →</button></div>'}
+if(S.unitTab==='Membros'){h+='<h3 style="margin-top:14px">Membros da unidade · 8</h3>';DB.members.filter(function(m){return m.unit===u.id}).forEach(function(m){h+='<button class="memberrow" onclick="go(\'membro\',{memberId:\''+m.id+'\',unitId:\''+u.id+'\'})"><img src="'+m.img+'"><span style="flex:1"><b style="font-size:13px">'+m.name+'</b><br><span class="kv">'+m.role+'</span></span><span style="text-align:right"><b>'+m.progress+'%</b><br>'+awardPill(m.award)+'</span><span style="color:#475569">'+ic('chev',16)+'</span></button>'});if(!DB.members.some(function(m){return m.unit===u.id})){h+='<div class="panel">8 desbravadores · dados de exemplo na versão completa.</div>'}}
+if(S.unitTab==='Requisitos'){h+=reqBox()}
+if(S.unitTab==='Missões'){h+=missBox()}
+if(S.unitTab==='História'){h+='<div class="panel"><div style="display:flex;justify-content:space-between;align-items:center"><h3>SOBRE A UNIDADE</h3><button class="tab '+(S.editing?'active':'')+'" onclick="S.editing=!S.editing;render()">'+(S.editing?'Salvar':'Editar')+'</button></div><p class="kv">Fundada em '+u.founded+' · Conselheiro '+u.counselor+'</p>';
+if(S.editing){h+='<textarea id="hist-edit" class="edit">'+u.history+'</textarea><button class="btn-primary" onclick="toast(\'História salva\');S.editing=false;render()">Salvar alterações</button>'}else{h+='<p class="hist">'+u.history+'</p>'}
+h+='<h3 style="margin-top:18px">GRITO DE GUERRA</h3><div class="warbox">'+u.name+'!\n'+u.warcry.toUpperCase()+'!</div></div><div class="panel"><h3>MOMENTOS DA UNIDADE</h3><div class="gal">'+DB.gallery.slice(0,6).map(function(g){return '<img src="https://images.unsplash.com/'+g+'?auto=format&fit=crop&w=400&q=70">'}).join('')+'</div></div>'}
+if(S.unitTab==='Fotos'){h+='<div class="gal" style="margin-top:14px">'+DB.gallery.map(function(g){return '<img src="https://images.unsplash.com/'+g+'?auto=format&fit=crop&w=400&q=70" style="height:130px">'}).join('')+'</div>'}
+return h;
+}
+function reqBox(){
+var arr=S.reqTab==='Individuais'?DB.reqInd:(S.reqTab==='Unidade'?DB.reqUni:DB.reqCons);
+var h='<div style="display:flex;gap:8px;margin-top:14px">';['Individuais','Unidade','Conselheiro'].forEach(function(t){h+='<button class="tab '+(S.reqTab===t?'active':'')+'" style="flex:1" onclick="S.reqTab=\''+t+'\';render()">'+t+'</button>'});h+='</div><div class="panel"><div class="kv">Progresso · 86% · 18 de 21</div><div style="margin-top:8px">'+bar(86,'#38BDF8')+'</div>';
+arr.forEach(function(t,i){var on=S.checked[S.reqTab+i];h+='<button class="req" onclick="toggleReq(\''+S.reqTab+i+'\')"><span class="check '+(on?'on':'')+'">'+(on?ic('check',13):'')+'</span><span style="color:'+(on?'#fff':'#8fa0b5')+'">'+t+'</span></button>'});
+return h+'</div>';
+}
+function missBox(){
+var h='';DB.missions.forEach(function(m){h+='<div class="mission"><span class="pill" style="color:#c4b5fd;border-color:rgba(167,139,250,.4)">'+ic('spark',12)+m.scope+'</span> <span class="pill" style="float:right;color:#fcd34d">'+m.s+'</span><div style="font-weight:900;margin-top:8px">'+m.t+'</div><div class="kv">'+m.d+'</div><div style="margin-top:8px">'+bar(m.p,m.p===100?'#35D07F':'#F5B82E')+'</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px"><b style="color:var(--gold);font-size:13px;display:inline-flex;gap:5px;align-items:center">'+starF(14,'#F5B82E')+'+'+m.pts+' pontos</b><button class="tab" onclick="toast(\'Progresso registrado\')">Atualizar</button></div></div>'});return h;
+}
+function vMembros(){
+var q=(S.search||'').toLowerCase();
+var list=DB.members.filter(function(m){return m.name.toLowerCase().indexOf(q)>=0});
+var h='<div style="display:flex;justify-content:space-between;align-items:center"><div><h2 style="font-size:20px;font-weight:900">Desbravadores</h2><p class="kv">'+list.length+' membros no clube</p></div><button class="tab active" onclick="openModal(\'membro\')">+ Adicionar</button></div><div class="cards2">';
+list.forEach(function(m){var u=unit(m.unit);h+='<button class="memberrow" style="margin-top:0" onclick="go(\'membro\',{memberId:\''+m.id+'\',unitId:\''+m.unit+'\'})"><img src="'+m.img+'"><span style="flex:1"><b style="font-size:13px">'+m.name+'</b><br><span class="kv">'+m.age+' anos · '+u.short+'</span><br>'+awardPill(m.award)+'</span><span style="text-align:right"><b style="color:var(--cyan)">'+m.progress+'%</b><br><span class="kv">'+m.points+' pts</span></span></button>'});
+return h+'</div>';
+}
+function vMembro(){
+var m=member(S.memberId),u=unit(m.unit);
+var h='<div class="panel" style="text-align:center"><img src="'+m.img+'" style="width:80px;height:80px;border-radius:50%;border:4px solid rgba(56,189,248,.5)"><h2 style="font-size:20px;font-weight:900;margin-top:8px">'+m.name+'</h2><p class="kv">'+m.role+' | '+m.age+' anos</p><span class="pill" style="margin-top:8px">'+unitIcon(u.id,14)+u.short+'</span></div><div class="panel" style="text-align:center"><h3 style="text-align:left">Progresso geral</h3><div style="display:flex;justify-content:center;margin:10px 0">'+ring(m.progress)+'</div><p class="kv">'+m.done+' de '+m.total+' requisitos concluídos</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;text-align:left">';[['Requisitos',m.progress,'#F5B82E'],['Frequência',m.freq,'#38BDF8'],['Eventos',90,'#35D07F'],['Fardamento',95,'#A78BFA']].forEach(function(r){h+='<div style="background:rgba(255,255,255,.03);border-radius:12px;padding:10px;font-size:12px"><div style="display:flex;justify-content:space-between"><span class="kv">'+r[0]+'</span><b>'+r[1]+'%</b></div>'+bar(r[1],r[2])+'</div>'});h+='</div></div><div class="panel" style="display:flex;gap:12px;align-items:center;border-color:rgba(245,184,46,.3);background:rgba(245,184,46,.05)"><span style="color:var(--gold)">'+ic('medal',34)+'</span><div><div class="kv">Premiação atual</div><b style="color:var(--gold)">'+m.award+' · '+m.points.toLocaleString('pt-BR')+' pontos</b></div></div>'+reqBox();
+return h;
+}
+function vRequisitos(){return '<h2 style="font-size:20px;font-weight:900">Requisitos</h2>'+reqBox()}
+function toggleReq(k){S.checked[k]=!S.checked[k];toast(S.checked[k]?'Requisito concluído +10 pts':'Requisito desmarcado');render()}
+function vFrequencia(){
+var rows=DB.members.slice(0,6);
+var h='<div style="display:flex;gap:12px;align-items:center"><div class="datebox"><div><small>05</small><br><b>OUT</b></div></div><div><h2 style="font-weight:900">Frequência</h2><p class="kv">Reunião regular · 05 de outubro · 19:00 | IASD Central</p></div></div><div class="btnrow"><button class="btn2" onclick="markAll()">Marcar todos presentes</button><button class="btn2" style="background:linear-gradient(135deg,#009FE3,#0077ff);border:0" onclick="toast(\'Chamada salva · +100 pts\')">Salvar chamada</button></div><div class="panel" style="overflow-x:auto"><table class="tbl"><tr><th>Desbravador</th><th>Presença</th><th>Fardamento</th></tr>';
+rows.forEach(function(m){var f=S.freq[m.id]||{p:'P',u:'C'};h+='<tr><td><div style="display:flex;gap:8px;align-items:center"><img src="'+m.img+'" style="width:32px;height:32px;border-radius:50%">'+m.name+'</div></td><td><button class="tag '+(f.p==='P'?'g':'r')+'" onclick="toggleP(\''+m.id+'\')">'+(f.p==='P'?'Presente':'Ausente')+'</button></td><td><button class="tag '+(f.u==='C'?'g':(f.u==='I'?'a':'r'))+'" onclick="toggleU(\''+m.id+'\')">'+ic('shirt',12)+(f.u==='C'?'Completo':(f.u==='I'?'Incompleto':'—'))+'</button></td></tr>'});
+return h+'</table></div><div class="panel"><p class="kv">Fardamento por evento: uniforme, lenço e insígnias. <b style="color:#6ee7b7">Completo</b> · <b style="color:#fcd34d">Incompleto</b> · <b style="color:#fca5a5">Não informado</b></p></div>';
+}
+function toggleP(id){var f=S.freq[id]||{p:'P',u:'C'};f.p=(f.p==='P'?'A':'P');S.freq[id]=f;render()}
+function toggleU(id){var f=S.freq[id]||{p:'P',u:'C'};f.u=(f.u==='C'?'I':'C');S.freq[id]=f;render()}
+function markAll(){DB.members.forEach(function(m){S.freq[m.id]={p:'P',u:'C'}});toast('Todos marcados como presentes');render()}
+function vAgenda(){
+var h='<div style="display:flex;justify-content:space-between;align-items:center"><h2 style="font-size:20px;font-weight:900">Agenda</h2><button class="iconbtn" style="background:linear-gradient(135deg,#009FE3,#0077ff)" onclick="openModal(\'evento\')">'+ic('plus',18)+'</button></div><div class="panel"><b>Outubro 2026</b><div class="cal"><span class="h">D</span><span class="h">S</span><span class="h">T</span><span class="h">Q</span><span class="h">Q</span><span class="h">S</span><span class="h">S</span><span></span><span></span><span></span>';
+var marks={5:'#38BDF8',10:'#35D07F',17:'#A78BFA',24:'#94A3B8'};
+for(var d=1;d<=31;d++){if(marks[d]){h+='<button style="color:'+marks[d]+';box-shadow:0 0 0 1.5px '+marks[d]+';background:'+marks[d]+'22;border-radius:50%" onclick="toast(\'Dia '+d+' selecionado\')">'+d+'</button>'}else{h+='<button onclick="toast(\'Dia '+d+'\')">'+d+'</button>'}}
+h+='</div><div style="margin-top:12px">';
+DB.events.forEach(function(e){h+='<button class="evrow" onclick="go(\'eventos\')"><span class="datebox"><span><small>'+e.day+' '+e.mon+'</small></span></span><span><b style="font-size:13px">'+e.name+'</b><br><span class="kv">'+e.time+' | '+e.place+'</span></span><span class="dot" style="background:'+e.color+'"></span></button>'});
+return h+'</div></div>';
+}
+function vEventos(){
+var h='<div style="display:flex;justify-content:space-between;align-items:center"><div><h2 style="font-size:20px;font-weight:900">Eventos</h2><p class="kv">Outubro 2026 · 4 eventos</p></div><button class="tab active" onclick="openModal(\'evento\')">+ Novo evento</button></div>';
+DB.events.forEach(function(e){h+='<div class="panel"><div style="display:flex;gap:12px"><div class="datebox"><div><small>'+e.mon+'</small><b>'+e.day+'</b></div></div><div><span class="pill" style="color:'+e.color+'">'+e.type+'</span><div style="font-weight:900;margin-top:4px">'+e.name+'</div><div class="kv">'+ic('clock',12)+' '+e.time+'</div><div class="kv">'+ic('pin',12)+' '+e.place+' · +'+e.pts+' pts</div></div></div><div class="btnrow" style="grid-template-columns:1fr 1fr 1fr"><button class="btn2" onclick="go(\'frequencia\')">Frequência</button><button class="btn2" onclick="go(\'frequencia\')">Fardamento</button><button class="btn2" style="color:#7dd3fc;border-color:rgba(56,189,248,.4)" onclick="toast(\'Pontuação gerada\')">Pontuar</button></div></div>'});
+return h;
+}
+function vMissoes(){return '<h2 style="font-size:20px;font-weight:900">Missões</h2><p class="kv">Temporada 2026 · complete e ganhe pontos</p>'+missBox()}
+function vRanking(){
+var order=[DB.units[0],DB.units[1],DB.units[2]];
+var h='<h2 style="text-align:center;font-size:20px;font-weight:900">Ranking</h2><p class="kv" style="text-align:center">Temporada 2026</p><div class="tabs" style="justify-content:center">';['Geral','Requisitos','Frequência','Eventos','Missões'].forEach(function(f){h+='<button class="tab '+(S.rankF===f?'active':'')+'" onclick="S.rankF=\''+f+'\';render()">'+f+'</button>'});h+='</div><div class="podium">';
+var cols=[order[1],order[0],order[2]];
+cols.forEach(function(u){var first=(u.rank===1);h+='<button class="pcol" onclick="go(\'unidade\',{unitId:\''+u.id+'\'})"><span class="pill">'+u.rank+'°</span><span class="pbox" style="height:'+(first?130:100)+'px;border-color:'+(first?'rgba(245,184,46,.5)':'rgba(255,255,255,.12)')+';background:'+(first?'linear-gradient(180deg,rgba(245,184,46,.25),transparent)':'rgba(255,255,255,.03)')+';box-shadow:'+(first?'0 0 40px rgba(245,184,46,.3)':'none')+'">'+unitIcon(u.id,first?48:34)+'</span><b style="font-size:13px;margin-top:6px">'+u.short+'</b><b style="font-size:12px;color:'+(first?'var(--gold)':'#94A3B8')+'">'+u.points.toLocaleString('pt-BR')+' pts</b></button>'});
+h+='</div><div class="panel">';
+order.forEach(function(u,i){h+='<button class="evrow" onclick="go(\'unidade\',{unitId:\''+u.id+'\'})"><span class="check '+(i===0?'on':'')+'" style="'+(i===0?'':'background:rgba(255,255,255,.1)')+'font-size:12px;font-weight:900">'+(i+1)+'</span>'+unitIcon(u.id,24)+'<b style="font-size:13px">'+u.short+'</b><span style="margin-left:auto;text-align:right"><b style="font-size:13px">'+u.points.toLocaleString('pt-BR')+'</b><br>'+bar(Math.round(u.points/3016*100),i===0?'#F5B82E':(i===1?'#FB7185':'#38BDF8'))+'</span></button>'});
+return h+'</div>';
+}
+function medalColor(t){return t==='OURO'?'#F5B82E':(t==='PRATA'?'#CBD5E1':'#F97316')}
+function vPremiacoes(){
+var h='<h2 style="font-size:20px;font-weight:900">Premiações</h2><p class="kv">Níveis configuráveis · Temporada 2026</p><div class="unitgrid">';
+var lv=[['OURO','90% – 100%'],['PRATA','75% – 89%'],['BRONZE','60% – 74%']];
+lv.forEach(function(l){h+='<div class="panel" style="text-align:center;margin-top:0;border-color:'+medalColor(l[0])+'55"><div style="color:'+medalColor(l[0])+'">'+ic('medal',36)+'</div><b style="color:'+medalColor(l[0])+'">'+l[0]+'</b><div class="kv">'+l[1]+'</div></div>'});
+h+='</div>';
+DB.units.forEach(function(u){var medal=u.rank===1?'Ouro':(u.rank===2?'Prata':'Bronze');h+='<div class="memberrow">'+unitIcon(u.id,26)+'<span style="flex:1"><b>'+u.short+'</b><br><span class="kv">'+u.req+'% média geral</span></span>'+awardPill(medal)+'</div>'});
+return h+'<button class="btn2" style="width:100%;margin-top:12px" onclick="toast(\'Faixas salvas (protótipo)\')">Editar faixas de premiação</button>';
+}
+function vGaleria(){
+var h='<div style="display:flex;justify-content:space-between;align-items:center"><h2 style="font-size:20px;font-weight:900">Galeria</h2><button class="tab active" onclick="openModal(\'foto\')">+ Adicionar foto</button></div><div class="tabs">';['Todos','Clube','Águias','Fênix','Stelar'].forEach(function(f){h+='<button class="tab '+(S.galF===f?'active':'')+'" onclick="S.galF=\''+f+'\';render()">'+f+'</button>'});h+='</div><h3 style="margin-top:14px;font-size:13px">Outubro 2026 · Reunião regular</h3><div class="gal">'+DB.gallery.slice(0,4).map(function(g){return '<img src="https://images.unsplash.com/'+g+'?auto=format&fit=crop&w=400&q=70">'}).join('')+'</div><h3 style="margin-top:14px;font-size:13px">Acampamento</h3><div class="gal">'+DB.gallery.slice(4).map(function(g){return '<img src="https://images.unsplash.com/'+g+'?auto=format&fit=crop&w=400&q=70">'}).join('')+'</div>';
+return h;
+}
+function vRelatorios(){
+var h='<h2 style="font-size:20px;font-weight:900">Relatórios</h2><p class="kv">Setembro / Outubro</p><div class="grid2" style="grid-template-columns:1fr 1fr"><div class="panel"><h3>Frequência das reuniões</h3>';
+DB.freqHist.forEach(function(f){h+='<div class="chartbar"><span class="kv" style="width:40px">'+f[0]+'</span><div class="bar"><i style="width:'+f[1]+'%;background:linear-gradient(90deg,#009FE3,#38BDF8)"></i></div><b>'+f[1]+'%</b></div>'});
+h+='</div><div class="panel"><h3>Participação em eventos</h3><div class="ringwrap" style="margin-top:10px;justify-content:center">'+ring(88,120,'#35D07F')+'</div><div class="kv" style="text-align:center;margin-top:8px">Águias 100% · Fênix 90% · Stelar 85%</div></div></div><div class="panel"><h3>Ranking de pontos</h3>';
+DB.units.forEach(function(u){h+='<div class="chartbar">'+unitIcon(u.id,18)+'<span style="width:60px">'+u.short+'</span><div class="bar"><i style="width:'+Math.round(u.points/3016*100)+'%;background:#F5B82E"></i></div><b>'+u.points.toLocaleString('pt-BR')+'</b></div>'});
+return h+'</div>';
+}
+function vConfig(){
+var items=[['Perfil do clube','Logo, nome e temporada'],['Unidades','Águias, Fênix e Stelar'],['Usuários','Diretores e conselheiros'],['Permissões','Quem pode editar o quê'],['Temporadas','2026 e histórico'],['Premiações','Faixas Ouro/Prata/Bronze'],['Requisitos','Listas por categoria']];
+var h='<h2 style="font-size:20px;font-weight:900">Configurações</h2><div class="panel"><div style="display:flex;gap:12px;align-items:center">'+logoHTML()+'<div><b>Esquadrão do Céu</b><div class="kv">Fundado em 2022 · Temporada 2026</div></div></div></div><div class="panel" style="padding:0">';
+items.forEach(function(it){h+='<button class="evrow" style="padding:14px 18px" onclick="toast(\''+it[0]+'\')"><span><b style="font-size:13px">'+it[0]+'</b><br><span class="kv">'+it[1]+'</span></span><span style="margin-left:auto;color:#475569">'+ic('chev',16)+'</span></button>'});
+return h+'</div>';
+}
+function vMais(){
+var h='<h2 style="font-size:20px;font-weight:900">Mais</h2><div class="panel" style="display:flex;gap:12px;align-items:center"><img src="https://i.pravatar.cc/80?img=11" style="width:48px;height:48px;border-radius:50%"><div><b>Henrique Castro</b><div class="kv">Diretor do Clube</div></div></div><div class="panel" style="padding:0">';
+[['Perfil do clube','config'],['Exportar relatórios','relatorios'],['Central de ajuda','config']].forEach(function(it){h+='<button class="evrow" style="padding:14px 18px" onclick="go(\''+it[1]+'\')"><b style="font-size:13px">'+it[0]+'</b><span style="margin-left:auto;color:#475569">'+ic('chev',16)+'</span></button>'});
+h+='<button class="evrow" style="padding:14px 18px;color:#f87171" onclick="S.logged=false;render()"><b style="font-size:13px">Sair da conta</b></button></div><div class="cards2"><button class="panel" style="margin-top:0" onclick="go(\'missoes\')"><b>'+ic('spark',16)+' Missões</b></button><button class="panel" style="margin-top:0" onclick="go(\'premiacoes\')"><b>'+ic('medal',16)+' Premiações</b></button><button class="panel" style="margin-top:0" onclick="go(\'frequencia\')"><b>'+ic('shirt',16)+' Frequência</b></button><button class="panel" style="margin-top:0" onclick="go(\'requisitos\')"><b>'+ic('clip',16)+' Requisitos</b></button></div>';
+return h;
+}
+function openModal(kind){
+var r=document.getElementById('modal-root');
+var body='';
+if(kind==='evento'){body='<h3>Novo evento</h3><input id="m-name" class="field" placeholder="Nome do evento"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input class="field" placeholder="05/11/2026"><input class="field" placeholder="19:00"></div><input class="field" placeholder="Local — IASD Central"><div class="kv" style="margin-top:10px">Registrar frequência · Fardamento · Pontuação</div><button class="btn-primary" onclick="closeModal();toast(\'Evento criado com sucesso\')">Criar evento</button>'}
+if(kind==='membro'){body='<h3>Adicionar membro</h3><input class="field" placeholder="Nome completo"><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><input class="field" placeholder="Idade"><input class="field" placeholder="Classe"></div><button class="btn-primary" onclick="closeModal();toast(\'Desbravador adicionado\')">Adicionar</button>'}
+if(kind==='foto'){body='<h3>Adicionar foto</h3><div style="border:1.5px dashed rgba(255,255,255,.25);border-radius:14px;height:130px;display:grid;place-items:center;margin-top:10px;color:#94A3B8">'+ic('camera',36)+'</div><button class="btn-primary" onclick="closeModal();toast(\'Foto enviada\')">Enviar foto</button>'}
+r.innerHTML='<div class="modal-bg" onclick="closeModal()"><div class="modal" onclick="event.stopPropagation()"><div style="text-align:right"><button onclick="closeModal()" aria-label="Fechar">'+ic('x',18)+'</button></div>'+body+'</div></div>';
+}
+function closeModal(){document.getElementById('modal-root').innerHTML=''}
+render();
+</script>
+</body>
+</html>
